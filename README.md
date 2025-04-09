@@ -1,4 +1,4 @@
-# Spatial Binning Utils
+# ImageBinPlot
 
 A Simple R function for binning and visualizing spatial transcriptomics data from Seurat objects. This utility supports both cell-based expression data and molecule-based transcript counts, with optional identity overlays using `scattermore`. Designed for Xenium data but adaptable to other spatial datasets.
 
