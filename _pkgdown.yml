@@ -1,4 +1,22 @@
 url: https://simoncmo.github.io/ImageBinPlot/
 template:
   bootstrap: 5
-
+reference:
+  - title: "Main Plotting Functions"
+    desc: "Core functions for spatial binning plots"
+    contents:
+      - ImageBinPlot
+      - ImageBinPlotFOVs
+      - ImageBinPlotObjects
+  - title: "Helper Functions"
+    desc: "Utilities for spatial binning"
+    contents:
+      - reverse_layer_order
+      - get_fov_centroid_ranges
+      - FetchDataWithCentroid
+      - bin_spatial_data
+      - GetNumericQuantile
+      - GetPlotValueQuantile
+      - viridisColor
+      - CombinedPlotToList
+      - MakeCombinePlotSameScale

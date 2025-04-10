@@ -132,49 +132,41 @@ viridisColor <- function(
   get(palette)(n = n, begin = begin, end = end, alpha = alpha, ...)
 }
 
-# Main plotting function with optional identity overlay
-# Old name: plot_binned_spatial_density 
-# New name: ImageBinPlot
+#' ImageBinPlot: Create a Spatial Binning Plot
+#'
+#' This function creates a spatial binning plot for a specified gene or molecule in a Seurat object.
+#' It allows for optional overlay of identity classes and customization of bin size, color scale, and other parameters.
+#'
 #' @param obj Seurat object
 #' @param feature Gene to visualize
-#' @param group.by Identity class to overlay
-#' @param x_col Column name for x-coordinates
-#' @param y_col Column name for y-coordinates
-#' @param x_min Minimum x-coordinate
-#' @param x_max Maximum x-coordinate
-#' @param y_min Minimum y-coordinate
-#' @param y_max Maximum y-coordinate
-#' @param bin_size Size of bins in micrometers
-#' @param max_multiplier Maximum multiplier for color scale - Deprecated
-#' @param max_quantile Maximum quantile for color scale
-#' @param fov Field of view to visualize
-#' @param palette Color palette to use
-#' @param palette_begin Start of color palette
-#' @param palette_end End of color palette
-#' @param min Minimum value for color scale
-#' @param type Type of data to visualize ("expression" or "molecule")
-#' @param assay Assay to use for fetching data
-#' @param layer Layer to use for fetching data
-#' @param ident_alpha Alpha level for identity overlay
-#' @param ident_pointsize Point size for identity overlay
+#' @param group.by Identity class to overlay (optional)
+#' @param x_col Column name for x-coordinates (default: "x")
+#' @param y_col Column name for y-coordinates (default: "y")
+#' @param fov Field of view to visualize (optional)
+#' @param x_min Minimum x-coordinate (optional)
+#' @param x_max Maximum x-coordinate (optional)
+#' @param y_min Minimum y-coordinate (optional)
+#' @param y_max Maximum y-coordinate (optional)
+#' @param bin_size Size of bins in micrometers (default: 10)
+#' @param max_multiplier Maximum multiplier for color scale (deprecated)
+#' @param max_quantile Maximum quantile for color scale (default: "q75")
+#' @param min Minimum value for color scale (default: 0)
+#' @param type Type of data to visualize ("expression" or "molecule", default: "expression")
+#' @param assay Assay to use for fetching data (default: "Xenium")
+#' @param layer Layer to use for fetching data (default: "count")
+#' @param palette Color palette to use (default: c("viridis", "inferno", "magma", "plasma", "cividis", "mako", "rocket", "turbo"))
+#' @param palette_begin Start of color palette (default: 0)
+#' @param palette_end End of color palette (default: 1)
+#' @param ident_alpha Alpha level for identity overlay (default: 0.3)
+#' @param ident_pointsize Point size for identity overlay (default: 1)
 #' @param filter_ident Optional filter for identity overlay
-#' @param feature_on_top Whether to place feature layer on top of identity overlay
-#' @param flip_y Whether to flip the y-axis. Default is TRUE
-#' @return ggplot object
+#' @param feature_on_top Whether to place feature layer on top of identity overlay (default: TRUE)
+#' @param flip_y Whether to flip the y-axis (default: TRUE)
+#' @return A ggplot object representing the spatial binning plot
 #' @export
 #' @examples
 #' ImageBinPlot(seurat_obj, feature = "GeneA", group.by = "cell_type", bin_size = 20)
 #' ImageBinPlot(seurat_obj, feature = "GeneB", type = "molecule", bin_size = 50)
-#' ImageBinPlot(seurat_obj, feature = "GeneC", group.by = "cell_type", filter_ident = c("Type1", "Type2"))
-#' @description
-#' This function creates a spatial binning plot for a specified gene or molecule in a Seurat object.
-#' It allows for optional overlay of identity classes and customization of bin size, color scale, and other parameters.
-#' #' The function uses ggplot2 for visualization and supports both expression and molecule data types.
-#' #' @details
-#' The function first checks if the specified gene exists in the object. It then fetches the data based on the specified type (expression or molecule) and bins the data into spatial bins of the specified size. The resulting plot shows the binned data with an optional overlay of identity classes, allowing for a clear visualization of spatial patterns in gene expression or molecule counts.
-#' #' @return A ggplot object representing the spatial binning plot.
-#' #' @export
-#' ImageBinPlot
 #' @importFrom ggplot2 ggplot aes geom_raster scale_fill_viridis_c scale_alpha_continuous theme_minimal labs coord_fixed theme
 #' @importFrom dplyr mutate select filter group_by summarise ungroup
 #' @importFrom tidyr pivot_longer
@@ -184,10 +176,6 @@ viridisColor <- function(
 #' @importFrom purrr %||%
 #' @importFrom rlang .data
 #' @importFrom stats na.omit
-#' @importFrom tibble as_tibble
-#' @importFrom dplyr bind_cols bind_rows arrange select filter group_by summarise 
-#'   ungroup mutate distinct slice pull rename left_join right_join inner_join
-#' @importFrom tidyr pivot_wider pivot_longer
 ImageBinPlot <- function(obj, feature, group.by = NULL, 
                                         x_col = "x", y_col = "y", 
                                         fov = NULL,
