@@ -173,104 +173,358 @@ ggsave("EPCAM_multi_object.pdf", p_objects, width = 10, height = 10)
 
 ## Function Details
 
-### `ImageBinPlot`
-Creates a spatial binning plot for a specified feature (gene or molecule) in a Seurat object.  
-| Parameter         | Type       | Default Value                              | Description                                                                                                                |
-|-------------------|------------|--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|
-| obj               | Seurat     | —                                          | A Seurat object containing spatial transcriptomics data.                                                                |
-| feature           | character  | —                                          | The gene or feature to visualize.                                                                                        |
-| group.by          | character  | NULL                                       | Optional; column name in the Seurat object for identity overlay (e.g. cell type or cluster).                               |
-| x_col             | character  | "x"                                        | Column name for x-coordinate values.                                                                                      |
-| y_col             | character  | "y"                                        | Column name for y-coordinate values.                                                                                      |
-| fov               | character  | Images(obj)[[1]]                           | Field of view to visualize; defaults to the first available FOV in the object.                                           |
-| x_min             | numeric    | NULL                                       | Minimum x-coordinate limit; if NULL, automatically set from the FOV’s centroid range.                                    |
-| x_max             | numeric    | NULL                                       | Maximum x-coordinate limit; if NULL, automatically set from the FOV’s centroid range.                                    |
-| y_min             | numeric    | NULL                                       | Minimum y-coordinate limit; if NULL, automatically set from the FOV’s centroid range.                                    |
-| y_max             | numeric    | NULL                                       | Maximum y-coordinate limit; if NULL, automatically set from the FOV’s centroid range.                                    |
-| bin_size          | numeric    | 10                                         | Size of each spatial bin (in micrometers).                                                                               |
-| max_multiplier    | numeric    | NULL                                       | (Deprecated) Previously used multiplier for color scale; use max_quantile instead.                                       |
-| min               | numeric    | 0                                          | Minimum value for the color scale.                                                                                       |
-| max_quantile      | character  | "q75"                                      | Quantile string (e.g., "q75") to determine the maximum value for the color scale from the binned data.                     |
-| type              | character  | "expression"                               | Type of data to plot; either "expression" (cell-based) or "molecule" (individual transcript counts).                     |
-| assay             | character  | "Xenium"                                   | Assay to use for data extraction from the Seurat object.                                                                 |
-| layer             | character  | "count"                                    | Data layer within the assay to use (commonly "count").                                                                   |
-| palette           | character  | c('viridis','inferno','magma','plasma','cividis','mako','rocket','turbo') | Color palette to use for visualization.                                 |
-| palette_begin     | numeric    | 0                                          | Start position of the selected color palette.                                                                            |
-| palette_end       | numeric    | 1                                          | End position of the selected color palette.                                                                              |
-| ident_alpha       | numeric    | 0.3                                        | Transparency level for the identity overlay points.                                                                      |
-| ident_pointsize   | numeric    | 1                                          | Point size for the identity overlay.                                                                                     |
-| filter_ident      | vector     | NULL                                       | Optional; a filter to include only specific identities from group.by.                                                    |
-| feature_on_top    | logical    | TRUE                                       | If TRUE, the feature layer (binned data) is rendered on top of the identity overlay.                                     |
+Below is the reformatted documentation for your three functions (`ImageBinPlot`, `ImageBinPlotFOVs`, and `ImageBinPlotObjects`) in the style of R documentation, similar to the example you provided.
 
 ---
 
-### `ImageBinPlotFOVs`
-Generates bin plots for multiple fields of view (FOVs) in a Seurat object.  
-- Optionally enforces the same scale across FOVs using `same_scale`.
+### Spatial Binning Plots
+**Source:** R/visualization.R  
+Visualize spatial transcriptomics data by creating binning plots for features (genes or molecules) in a Seurat object.
 
-| Parameter         | Type       | Default Value                              | Description                                                                                                                |
-|-------------------|------------|--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|
-| obj               | Seurat     | —                                          | A Seurat object containing spatial transcriptomics data.                                                                |
-| feature           | character  | —                                          | The gene or feature to be visualized.                                                                                    |
-| group.by          | character  | NULL                                       | Optional; column for identity overlay.                                                                                   |
-| fovs              | vector     | NULL (defaults to all FOVs via Images(obj))  | A vector of FOV names to plot. If NULL, plots all available FOVs in the object.                                           |
-| bin_size          | numeric    | 10                                         | Size of spatial bins (in micrometers).                                                                                   |
-| min               | numeric    | 0                                          | Minimum value for the color scale.                                                                                       |
-| max_quantile      | character  | "q75"                                      | Quantile string to determine the maximum value for the color scale.                                                      |
-| x_min             | numeric    | NULL                                       | Optional minimum x-coordinate; derived from data if not provided.                                                        |
-| x_max             | numeric    | NULL                                       | Optional maximum x-coordinate; derived from data if not provided.                                                        |
-| y_min             | numeric    | NULL                                       | Optional minimum y-coordinate; derived from data if not provided.                                                        |
-| y_max             | numeric    | NULL                                       | Optional maximum y-coordinate; derived from data if not provided.                                                        |
-| x_col             | character  | "x"                                        | Column name for x-coordinate values.                                                                                     |
-| y_col             | character  | "y"                                        | Column name for y-coordinate values.                                                                                     |
-| type              | character  | "expression"                               | Type of data to plot; either "expression" or "molecule".                                                                 |
-| assay             | character  | "Xenium"                                   | Assay to use for data extraction.                                                                                        |
-| layer             | character  | "count"                                    | Data layer to use for extraction.                                                                                        |
-| ident_alpha       | numeric    | 0.3                                        | Transparency level for identity overlay points.                                                                        |
-| ident_pointsize   | numeric    | 1                                          | Size of identity overlay points.                                                                                         |
-| palette           | character  | c('viridis','inferno','magma','plasma','cividis','mako','rocket','turbo') | Color palette vector for plotting.                           |
-| palette_begin     | numeric    | 0                                          | Start point for the color palette.                                                                                       |
-| palette_end       | numeric    | 1                                          | End point for the color palette.                                                                                         |
-| filter_ident      | vector     | NULL                                       | Optional filter to include only selected identities.                                                                   |
-| feature_on_top    | logical    | TRUE                                       | Whether the binned feature layer is drawn on top of the identity layer.                                                  |
-| same_scale        | logical    | FALSE                                      | If TRUE, forces all FOV plots to use the same color scale.                                                               |
-| ncol              | numeric    | NULL                                       | Optional; the number of columns when arranging the multiple FOV plots in a grid.                                         |
+#### `ImageBinPlot`
+Creates a spatial binning plot for a specified feature (gene or molecule) in a Seurat object.
+
+```R
+ImageBinPlot(
+  obj,
+  feature,
+  group.by = NULL,
+  x_col = "x",
+  y_col = "y",
+  fov = Images(obj)[[1]],
+  x_min = NULL,
+  x_max = NULL,
+  y_min = NULL,
+  y_max = NULL,
+  bin_size = 10,
+  max_multiplier = NULL,
+  min = 0,
+  max_quantile = "q75",
+  type = "expression",
+  assay = "Xenium",
+  layer = "count",
+  palette = c("viridis", "inferno", "magma", "plasma", "cividis", "mako", "rocket", "turbo"),
+  palette_begin = 0,
+  palette_end = 1,
+  ident_alpha = 0.3,
+  ident_pointsize = 1,
+  filter_ident = NULL,
+  feature_on_top = TRUE,
+  flip_y = TRUE
+)
+```
+
+##### Arguments
+`obj`  
+A Seurat object containing spatial transcriptomics data.
+
+`feature`  
+Character string specifying the gene or feature to visualize.
+
+`group.by`  
+Optional character string; column name in the Seurat object for identity overlay (e.g., cell type or cluster). Default is `NULL`.
+
+`x_col`  
+Character string specifying the column name for x-coordinate values. Default is `"x"`.
+
+`y_col`  
+Character string specifying the column name for y-coordinate values. Default is `"y"`.
+
+`fov`  
+Character string specifying the field of view to visualize; defaults to the first available FOV in the object (`Images(obj)[[1]]`).
+
+`x_min`  
+Numeric; minimum x-coordinate limit. If `NULL`, automatically set from the FOV’s centroid range.
+
+`x_max`  
+Numeric; maximum x-coordinate limit. If `NULL`, automatically set from the FOV’s centroid range.
+
+`y_min`  
+Numeric; minimum y-coordinate limit. If `NULL`, automatically set from the FOV’s centroid range.
+
+`y_max`  
+Numeric; maximum y-coordinate limit. If `NULL`, automatically set from the FOV’s centroid range.
+
+`bin_size`  
+Numeric; size of each spatial bin (in micrometers). Default is `10`.
+
+`max_multiplier`  
+Numeric; deprecated multiplier for color scale. Use `max_quantile` instead. Default is `NULL`.
+
+`min`  
+Numeric; minimum value for the color scale. Default is `0`.
+
+`max_quantile`  
+Character string (e.g., `"q75"`) specifying the quantile to determine the maximum value for the color scale from binned data. Default is `"q75"`.
+
+`type`  
+Character string specifying the type of data to plot; either `"expression"` (cell-based) or `"molecule"` (individual transcript counts). Default is `"expression"`.
+When `type = "expression"` resulting average values per bin, while `type = "molecule"` values are count of molecules per bin.
+
+`assay`  
+Character string specifying the assay to use for data extraction from the Seurat object. Default is `"Xenium"`.
+
+`layer`  
+Character string specifying the data layer within the assay to use (e.g., `"count"`). Default is `"count"`.
+
+`palette`  
+Character vector of color palette options for visualization (e.g., `"viridis"`, `"inferno"`, etc.). Default is `c("viridis", "inferno", "magma", "plasma", "cividis", "mako", "rocket", "turbo")`.
+
+`palette_begin`  
+Numeric; start position of the selected color palette. Default is `0`.
+
+`palette_end`  
+Numeric; end position of the selected color palette. Default is `1`.
+
+`ident_alpha`  
+Numeric; transparency level for the identity overlay points, between 0 and 1. Default is `0.3`.
+
+`ident_pointsize`  
+Numeric; point size for the identity overlay. Default is `1`.
+
+`filter_ident`  
+Optional vector; filter to include only specific identities from `group.by`. Default is `NULL`.
+
+`feature_on_top`  
+Logical; if `TRUE`, the feature layer (binned data) is rendered on top of the identity overlay. Default is `TRUE`.
+
+`flip_y`
+Logical; Whether to flip the y-axis. Default is `TRUE`.
+
+##### Value
+A ggplot object representing the spatial binning plot.
 
 ---
 
-### ImageBinPlotObjects
-### `ImageBinPlotObjects`
-Creates spatial binning plots for multiple Seurat objects, optionally across multiple FOVs, and allows same-scale visualization across objects.
-- Optionally enforces the same scale across samples and FOVs using `same_scale`.
+#### `ImageBinPlotFOVs`
+Generates bin plots for multiple fields of view (FOVs) in a Seurat object, with an option to enforce the same scale across FOVs.
 
-| Parameter         | Type       | Default Value                              | Description                                                                                                                |
-|-------------------|------------|--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|
-| obj_list          | list       | —                                          | A named list of Seurat objects to be plotted.                                                                            |
-| feature           | character  | —                                          | The gene or feature to visualize across objects.                                                                         |
-| group.by          | character  | NULL                                       | Optional; grouping variable for identity overlay across objects.                                                         |
-| fovs_list         | list       | NULL (defaults to all FOVs for each object)  | List of FOV vectors corresponding to each object; if NULL, defaults to using all FOVs from each object via Images(.x).        |
-| bin_size          | numeric    | 10                                         | Size of the spatial bins (in micrometers).                                                                               |
-| min               | numeric    | 0                                          | Minimum value for the color scale.                                                                                       |
-| max_quantile      | character  | "q75"                                      | Quantile string to determine the maximum value for the color scale.                                                      |
-| x_min             | numeric    | NULL                                       | Optional minimum x-coordinate limit; if NULL will be determined per object/FOV.                                          |
-| x_max             | numeric    | NULL                                       | Optional maximum x-coordinate limit; if NULL will be determined per object/FOV.                                          |
-| y_min             | numeric    | NULL                                       | Optional minimum y-coordinate limit; if NULL will be determined per object/FOV.                                          |
-| y_max             | numeric    | NULL                                       | Optional maximum y-coordinate limit; if NULL will be determined per object/FOV.                                          |
-| x_col             | character  | "x"                                        | Column name for x-coordinate values.                                                                                     |
-| y_col             | character  | "y"                                        | Column name for y-coordinate values.                                                                                     |
-| type              | character  | "expression"                               | Data type to visualize; "expression" or "molecule".                                                                      |
-| assay             | character  | "Xenium"                                   | Assay used for data extraction in each Seurat object.                                                                    |
-| layer             | character  | "count"                                    | Data layer within the assay to use.                                                                                      |
-| ident_alpha       | numeric    | 0.3                                        | Transparency level for identity overlay points.                                                                        |
-| ident_pointsize   | numeric    | 1                                          | Size of the identity overlay points.                                                                                     |
-| palette           | character  | c('viridis','inferno','magma','plasma','cividis','mako','rocket','turbo') | Color palette vector used for plotting.                         |
-| palette_begin     | numeric    | 0                                          | Start point for the color palette.                                                                                       |
-| palette_end       | numeric    | 1                                          | End point for the color palette.                                                                                         |
-| filter_ident      | vector     | NULL                                       | Optional filter to restrict which identities to plot.                                                                  |
-| feature_on_top    | logical    | TRUE                                       | Determines if the binned feature layer is drawn over the identity overlay.                                               |
-| same_scale        | logical    | FALSE                                      | If TRUE, applies a uniform color scale across all objects and their FOVs.                                                |
-| ncol              | numeric    | NULL                                       | Optional; number of columns when arranging the combined plots in a grid.                                                 |
+```R
+ImageBinPlotFOVs(
+  obj,
+  feature,
+  group.by = NULL,
+  fovs = NULL,
+  bin_size = 10,
+  min = 0,
+  max_quantile = "q75",
+  x_min = NULL,
+  x_max = NULL,
+  y_min = NULL,
+  y_max = NULL,
+  x_col = "x",
+  y_col = "y",
+  type = "expression",
+  assay = "Xenium",
+  layer = "count",
+  ident_alpha = 0.3,
+  ident_pointsize = 1,
+  palette = c("viridis", "inferno", "magma", "plasma", "cividis", "mako", "rocket", "turbo"),
+  palette_begin = 0,
+  palette_end = 1,
+  filter_ident = NULL,
+  feature_on_top = TRUE,
+  same_scale = FALSE,
+  ncol = NULL
+)
+```
 
+##### Arguments
+`obj`  
+A Seurat object containing spatial transcriptomics data.
+
+`feature`  
+Character string specifying the gene or feature to be visualized.
+
+`group.by`  
+Optional character string; column for identity overlay. Default is `NULL`.
+
+`fovs`  
+Vector of FOV names to plot. If `NULL`, defaults to all available FOVs in the object (`Images(obj)`).
+
+`bin_size`  
+Numeric; size of spatial bins (in micrometers). Default is `10`.
+
+`min`  
+Numeric; minimum value for the color scale. Default is `0`.
+
+`max_quantile`  
+Character string (e.g., `"q75"`) to determine the maximum value for the color scale. Default is `"q75"`.
+
+`x_min`  
+Numeric; optional minimum x-coordinate. Derived from data if `NULL`.
+
+`x_max`  
+Numeric; optional maximum x-coordinate. Derived from data if `NULL`.
+
+`y_min`  
+Numeric; optional minimum y-coordinate. Derived from data if `NULL`.
+
+`y_max`  
+Numeric; optional maximum y-coordinate. Derived from data if `NULL`.
+
+`x_col`  
+Character string specifying the column name for x-coordinate values. Default is `"x"`.
+
+`y_col`  
+Character string specifying the column name for y-coordinate values. Default is `"y"`.
+
+`type`  
+Character string; type of data to plot, either `"expression"` or `"molecule"`. Default is `"expression"`.
+
+`assay`  
+Character string; assay to use for data extraction. Default is `"Xenium"`.
+
+`layer`  
+Character string; data layer to use for extraction. Default is `"count"`.
+
+`ident_alpha`  
+Numeric; transparency level for identity overlay points, between 0 and 1. Default is `0.3`.
+
+`ident_pointsize`  
+Numeric; size of identity overlay points. Default is `1`.
+
+`palette`  
+Character vector of color palette options for plotting. Default is `c("viridis", "inferno", "magma", "plasma", "cividis", "mako", "rocket", "turbo")`.
+
+`palette_begin`  
+Numeric; start point for the color palette. Default is `0`.
+
+`palette_end`  
+Numeric; end point for the color palette. Default is `1`.
+
+`filter_ident`  
+Optional vector; filter to include only selected identities. Default is `NULL`.
+
+`feature_on_top`  
+Logical; if `TRUE`, the binned feature layer is drawn on top of the identity layer. Default is `TRUE`.
+
+`same_scale`  
+Logical; if `TRUE`, forces all FOV plots to use the same color scale. Default is `FALSE`.
+
+`ncol`  
+Numeric; optional number of columns when arranging multiple FOV plots in a grid. Default is `NULL`.
+
+##### Value
+A patchwork ggplot object combining bin plots for all specified FOVs.
+
+---
+
+#### `ImageBinPlotObjects`
+Creates spatial binning plots for multiple Seurat objects, optionally across multiple FOVs, with an option for uniform scaling.
+
+```R
+ImageBinPlotObjects(
+  obj_list,
+  feature,
+  group.by = NULL,
+  fovs_list = NULL,
+  bin_size = 10,
+  min = 0,
+  max_quantile = "q75",
+  x_min = NULL,
+  x_max = NULL,
+  y_min = NULL,
+  y_max = NULL,
+  x_col = "x",
+  y_col = "y",
+  type = "expression",
+  assay = "Xenium",
+  layer = "count",
+  ident_alpha = 0.3,
+  ident_pointsize = 1,
+  palette = c("viridis", "inferno", "magma", "plasma", "cividis", "mako", "rocket", "turbo"),
+  palette_begin = 0,
+  palette_end = 1,
+  filter_ident = NULL,
+  feature_on_top = TRUE,
+  same_scale = FALSE,
+  ncol = NULL
+)
+```
+
+##### Arguments
+`obj_list`  
+A named list of Seurat objects to be plotted.
+
+`feature`  
+Character string; the gene or feature to visualize across objects.
+
+`group.by`  
+Optional character string; grouping variable for identity overlay across objects. Default is `NULL`.
+
+`fovs_list`  
+List of FOV vectors corresponding to each object. If `NULL`, defaults to all FOVs from each object via `Images(.x)`.
+
+`bin_size`  
+Numeric; size of the spatial bins (in micrometers). Default is `10`.
+
+`min`  
+Numeric; minimum value for the color scale. Default is `0`.
+
+`max_quantile`  
+Character string (e.g., `"q75"`) to determine the maximum value for the color scale. Default is `"q75"`.
+
+`x_min`  
+Numeric; optional minimum x-coordinate limit. Determined per object/FOV if `NULL`.
+
+`x_max`  
+Numeric; optional maximum x-coordinate limit. Determined per object/FOV if `NULL`.
+
+`y_min`  
+Numeric; optional minimum y-coordinate limit. Determined per object/FOV if `NULL`.
+
+`y_max`  
+Numeric; optional maximum y-coordinate limit. Determined per object/FOV if `NULL`.
+
+`x_col`  
+Character string; column name for x-coordinate values. Default is `"x"`.
+
+`y_col`  
+Character string; column name for y-coordinate values. Default is `"y"`.
+
+`type`  
+Character string; data type to visualize, either `"expression"` or `"molecule"`. Default is `"expression"`.
+
+`assay`  
+Character string; assay used for data extraction in each Seurat object. Default is `"Xenium"`.
+
+`layer`  
+Character string; data layer within the assay to use. Default is `"count"`.
+
+`ident_alpha`  
+Numeric; transparency level for identity overlay points, between 0 and 1. Default is `0.3`.
+
+`ident_pointsize`  
+Numeric; size of the identity overlay points. Default is `1`.
+
+`palette`  
+Character vector of color palette options for plotting. Default is `c("viridis", "inferno", "magma", "plasma", "cividis", "mako", "rocket", "turbo")`.
+
+`palette_begin`  
+Numeric; start point for the color palette. Default is `0`.
+
+`palette_end`  
+Numeric; end point for the color palette. Default is `1`.
+
+`filter_ident`  
+Optional vector; filter to restrict which identities to plot. Default is `NULL`.
+
+`feature_on_top`  
+Logical; if `TRUE`, the binned feature layer is drawn over the identity overlay. Default is `TRUE`.
+
+`same_scale`  
+Logical; if `TRUE`, applies a uniform color scale across all objects and their FOVs. Default is `FALSE`.
+
+`ncol`  
+Numeric; optional number of columns when arranging combined plots in a grid. Default is `NULL`.
+
+##### Value
+A patchwork ggplot object combining bin plots across all specified objects and FOVs.
+
+--- 
+
+This format aligns with the R documentation style you provided, including sections for function description, arguments, and return value, while maintaining clarity and consistency. Let me know if you'd like further adjustments!
 
 ## Contributing
 Submit issues or pull requests to improve functionality or add features.

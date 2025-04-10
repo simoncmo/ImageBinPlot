@@ -40,7 +40,16 @@ FetchDataWithCentroid <- function(obj, vars, assay = NULL, layer = "count", fov 
     stop(paste("Assay", assay, "not found in the object."))
   }
   data <- FetchData(obj, vars = vars, assay = assay, layer = layer)
-  coords <- obj@images[[fov]]@boundaries$centroids@coords
+  coords <- obj@images[[fov]]@boundaries$centroids@coords %>% as.data.frame()
+  rownames(coords) <- obj@images[[fov]]@boundaries$centroids@cells
+  # Get rowname intersect before binding
+  intersect_rownames <- intersect(rownames(data), rownames(coords))
+  data <- data[intersect_rownames, , drop = FALSE]
+  coords <- coords[intersect_rownames, , drop = FALSE]
+  # Ensure the order of rows is the same
+  coords <- coords[rownames(data), , drop = FALSE]
+  # Bind data and coordinates
+  coords <- as.data.frame(coords)
   as.data.frame(bind_cols(data, coords))
 }
 
@@ -61,7 +70,7 @@ bin_spatial_data <- function(data, x_col = "x", y_col = "y", count_col = NULL,
     # Sum counts for expression-based binning
     bin_df <- data %>%
       group_by(x_bin, y_bin) %>%
-      summarise(count = sum(.data[[count_col]], na.rm = TRUE), .groups = "drop") %>%
+      summarise(count = mean(.data[[count_col]], na.rm = TRUE), .groups = "drop") %>%
       filter(!is.na(x_bin) & !is.na(y_bin))
   } else if (type == "molecule") {
     # Count occurrences for molecule-based binning
@@ -150,6 +159,7 @@ viridisColor <- function(
 #' @param ident_pointsize Point size for identity overlay
 #' @param filter_ident Optional filter for identity overlay
 #' @param feature_on_top Whether to place feature layer on top of identity overlay
+#' @param flip_y Whether to flip the y-axis. Default is TRUE
 #' @return ggplot object
 #' @export
 #' @examples
@@ -193,13 +203,15 @@ ImageBinPlot <- function(obj, feature, group.by = NULL,
                                         palette_begin = 0,
                                         palette_end = 1,
                                         ident_alpha = 0.3, ident_pointsize = 1, 
-                                        filter_ident = NULL, feature_on_top = TRUE) {
+                                        filter_ident = NULL, feature_on_top = TRUE,
+                                        flip_y = TRUE
+                                        ) {
   
   # Check if the gene exists
-  if (!feature %in% rownames(obj)) {
-    warning(paste("Gene", feature, "not found in the object."))
-    return(NULL)
-  }
+  # if (!feature %in% rownames(obj)) {
+  #   warning(paste("Gene", feature, "not found in the object."))
+  #   return(NULL)
+  # }
 
   # get Fov
   fov <- fov %||% Images(obj)[[1]]
@@ -210,10 +222,16 @@ ImageBinPlot <- function(obj, feature, group.by = NULL,
   
   # Fetch data based on type
   if (type == "expression") {
-    input_data <- FetchDataWithCentroid(obj, vars = feature, assay = assay, layer = layer)
+    input_data <- FetchDataWithCentroid(obj, vars = feature, assay = assay, layer = layer, fov = fov)
     count_col <- feature
   } else if (type == "molecule") {
-    input_data <- obj@images[[fov]]@molecules$molecules[[feature]] %>% as.data.frame
+    # if features not in molecule return NULL
+    fov_obj <- obj@images[[fov]]@molecules$molecules
+    if(!feature %in% colnames(fov_obj)) {
+      warning(paste( feature, "not found in molecule. Try use type = 'expression' if the variable is in @meta.data"))
+      return(NULL)
+    }
+    input_data <- fov_obj[[feature]] %>% as.data.frame
     count_col <- NULL
   } else {
     stop("Type must be 'expression' or 'molecule'.")
@@ -276,7 +294,7 @@ ImageBinPlot <- function(obj, feature, group.by = NULL,
   
   # Add identity overlay if specified
   if (!is.null(group.by)) {
-    df_ident <- FetchDataWithCentroid(obj, vars = group.by) %>%
+    df_ident <- FetchDataWithCentroid(obj, vars = feature, assay = assay, layer = layer, fov = fov) %>%
       mutate(x_center = x, y_center = y) %>%
       select(-x, -y)
     
@@ -295,6 +313,11 @@ ImageBinPlot <- function(obj, feature, group.by = NULL,
     if (feature_on_top) {
       p <- reverse_layer_order(p)
     }
+  }
+
+  # Flip y axis if specified
+  if(flip_y) {
+    p <- p + scale_y_reverse()
   }
   
   return(p)
