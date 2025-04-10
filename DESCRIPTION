@@ -1,13 +1,20 @@
 Package: ImageBinPlot
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: ImageBinPlot
+Version: 0.0.1.0000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
+    person("Simon", "Mo", , "c.mo@wustl.edu", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Description: A Simple R function for binning and visualizing spatial transcriptomics data from Seurat objects. This utility supports both cell-based expression data and molecule-based transcript counts, with optional identity overlays using scattermore. Designed for Xenium data but adaptable to other spatial datasets.
+License: `use_mit_license()`
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 URL: https://simoncmo.github.io/ImageBinPlot/
+Imports:
+    tidyverse,
+    Seurat,
+    ggplot2,
+    glue,
+    scattermore,
+    viridis,
+    patchwork
