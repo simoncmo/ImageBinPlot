@@ -78,49 +78,60 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<ol style="list-style-type: decimal">
-<li>
-<p><strong>Clone the Repository</strong>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/simoncmo/ImageBinPlot.git</span></code></pre></div>
-</li>
-<li>
-<p><strong>Source the Script</strong>: In your R session, source the script:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"ImageBinPlot.R"</span><span class="op">)</span></span></code></pre></div>
-</li>
-</ol>
+<p>You can install <code>ImageBinPlot</code> directly from GitHub using the <code>remotes</code> package:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Install remotes if not already installed</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># Install ImageBinPlot</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"simoncmo/ImageBinPlot"</span><span class="op">)</span></span></code></pre></div>
+<p>Alternatively, clone the repository and install locally:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/simoncmo/ImageBinPlot.git</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="bu">cd</span> ImageBinPlot</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Install from local directory</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"."</span>, repos <span class="op">=</span> <span class="cn">NULL</span>, type <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="usage-simple">Usage Simple<a class="anchor" aria-label="anchor" href="#usage-simple"></a>
+</h2>
+<p>Load the package and use the main functions:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://simoncmo.github.io/ImageBinPlot/">ImageBinPlot</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Example: Plot a single FOV</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ImageBinPlot.html">ImageBinPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>, feature <span class="op">=</span> <span class="st">"GeneA"</span>, bin_size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Example: Plot multiple FOVs</span></span>
+<span><span class="va">p_fovs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ImageBinPlotFOVs.html">ImageBinPlotFOVs</a></span><span class="op">(</span><span class="va">seurat_obj</span>, feature <span class="op">=</span> <span class="st">"GeneA"</span>, same_scale <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p_fovs</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="dependencies">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies"></a>
 </h2>
-<p>Install the required R packages:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tidyverse"</span>, <span class="st">"Seurat"</span>, <span class="st">"ggplot2"</span>, <span class="st">"glue"</span>, <span class="st">"scattermore"</span>, <span class="st">"viridis"</span>, <span class="st">"patchwork"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><code>ImageBinPlot</code> depends on the following R packages, which are automatically installed when you use <code>remotes::install_github()</code> or <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code>:</p>
 <ul>
-<li>
-<code>tidyverse</code>: For data manipulation and visualization.</li>
-<li>
-<code>Seurat</code>: For handling spatial transcriptomics data.</li>
-<li>
-<code>ggplot2</code>: For plotting.</li>
-<li>
-<code>glue</code>: For string interpolation.</li>
-<li>
-<code>scattermore</code>: For efficient scatter plot overlays.</li>
-<li>
-<code>viridis</code>: Provides color palettes.</li>
-<li>
-<code>patchwork</code>: For combining multiple plots.</li>
+<li><code>tidyverse</code></li>
+<li><code>Seurat</code></li>
+<li><code>ggplot2</code></li>
+<li><code>glue</code></li>
+<li><code>scattermore</code></li>
+<li><code>viridis</code></li>
+<li><code>patchwork</code></li>
 </ul>
+<p>See the <a href="DESCRIPTION"><code>DESCRIPTION</code> file</a> for the full list and version requirements.</p>
 </div>
 <div class="section level2">
-<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+<h2 id="usage-more">Usage More<a class="anchor" aria-label="anchor" href="#usage-more"></a>
 </h2>
 <div class="section level3">
 <h3 id="basic-setup">Basic Setup<a class="anchor" aria-label="anchor" href="#basic-setup"></a>
 </h3>
 <p>Load your Seurat object and source the script:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"/path/to/your_seurat_object.rds"</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/qsbase/qs" class="external-link">qs</a></span><span class="op">)</span>  <span class="co"># Optional if using .qs files</span></span>
 <span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu">qread</span><span class="op">(</span><span class="st">"/path/to/your_seurat_object.qs"</span>, nthreads <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
@@ -130,7 +141,7 @@
 <h3 id="example-1-expression-based-binning">Example 1: Expression-Based Binning<a class="anchor" aria-label="anchor" href="#example-1-expression-based-binning"></a>
 </h3>
 <p>Plot binned expression data for a gene using <code>ImageBinPlot</code>:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot expression of "EPCAM" with 10µm bins</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ImageBinPlot.html">ImageBinPlot</a></span><span class="op">(</span></span>
 <span>  <span class="va">obj</span>, </span>
@@ -149,7 +160,7 @@
 <h3 id="example-2-molecule-based-binning">Example 2: Molecule-Based Binning<a class="anchor" aria-label="anchor" href="#example-2-molecule-based-binning"></a>
 </h3>
 <p>Plot binned transcript counts for a gene:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot molecule counts for "TP63" with 10µm bins</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ImageBinPlot.html">ImageBinPlot</a></span><span class="op">(</span></span>
 <span>  <span class="va">obj</span>, </span>
@@ -164,7 +175,7 @@
 <h3 id="example-3-with-identity-overlay">Example 3: With Identity Overlay<a class="anchor" aria-label="anchor" href="#example-3-with-identity-overlay"></a>
 </h3>
 <p>Overlay Seurat clusters on the expression plot:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot "EPCAM" expression with cluster overlay</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ImageBinPlot.html">ImageBinPlot</a></span><span class="op">(</span></span>
 <span>  <span class="va">obj</span>, </span>
@@ -183,7 +194,7 @@
 <h3 id="example-4-filtered-identity-overlay">Example 4: Filtered Identity Overlay<a class="anchor" aria-label="anchor" href="#example-4-filtered-identity-overlay"></a>
 </h3>
 <p>Show only specific clusters:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Overlay only cluster "0" on "EPCAM"</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ImageBinPlot.html">ImageBinPlot</a></span><span class="op">(</span></span>
 <span>  <span class="va">obj</span>, </span>
@@ -202,7 +213,7 @@
 <h3 id="example-5-batch-processing-for-a-single-object">Example 5: Batch Processing for a Single Object<a class="anchor" aria-label="anchor" href="#example-5-batch-processing-for-a-single-object"></a>
 </h3>
 <p>Generate plots for multiple genes:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EPCAM"</span>, <span class="st">"TP63"</span>, <span class="st">"GeneX"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/grDevices/pdf.html" class="external-link">pdf</a></span><span class="op">(</span><span class="st">"batch_plots.pdf"</span>, width <span class="op">=</span> <span class="fl">10</span>, height <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">gene</span> <span class="kw">in</span> <span class="va">genes</span><span class="op">)</span> <span class="op">{</span></span>
@@ -221,7 +232,7 @@
 <h3 id="example-6-plotting-multiple-fields-of-view-fovs">Example 6: Plotting Multiple Fields of View (FOVs)<a class="anchor" aria-label="anchor" href="#example-6-plotting-multiple-fields-of-view-fovs"></a>
 </h3>
 <p>Generate plots for several FOVs using <code>ImageBinPlotFOVs</code>:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Generate plots for all FOVs in the object with same scale</span></span>
 <span><span class="va">p_fovs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ImageBinPlotFOVs.html">ImageBinPlotFOVs</a></span><span class="op">(</span></span>
 <span>  <span class="va">obj</span>, </span>
@@ -236,7 +247,7 @@
 <h3 id="example-7-multi-object-plotting">Example 7: Multi-Object Plotting<a class="anchor" aria-label="anchor" href="#example-7-multi-object-plotting"></a>
 </h3>
 <p>Combine plots for multiple spatial transcriptomics objects:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Assuming you have two Seurat objects: obj1 and obj2</span></span>
 <span><span class="va">p_objects</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ImageBinPlotObjects.html">ImageBinPlotObjects</a></span><span class="op">(</span></span>
 <span>  obj_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>obj1 <span class="op">=</span> <span class="va">obj1</span>, obj2 <span class="op">=</span> <span class="va">obj2</span><span class="op">)</span>, </span>
@@ -269,7 +280,7 @@
 <code>ImageBinPlot</code><a class="anchor" aria-label="anchor" href="#imagebinplot-1"></a>
 </h4>
 <p>Creates a spatial binning plot for a specified feature (gene or molecule) in a Seurat object.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ImageBinPlot.html">ImageBinPlot</a></span><span class="op">(</span></span>
 <span>  <span class="va">obj</span>,</span>
 <span>  <span class="va">feature</span>,</span>
@@ -362,7 +373,7 @@ Logical; if <code>TRUE</code>, the feature layer (binned data) is rendered on to
 <code>ImageBinPlotFOVs</code><a class="anchor" aria-label="anchor" href="#imagebinplotfovs"></a>
 </h4>
 <p>Generates bin plots for multiple fields of view (FOVs) in a Seurat object, with an option to enforce the same scale across FOVs.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ImageBinPlotFOVs.html">ImageBinPlotFOVs</a></span><span class="op">(</span></span>
 <span>  <span class="va">obj</span>,</span>
 <span>  <span class="va">feature</span>,</span>
@@ -456,7 +467,7 @@ Numeric; optional number of columns when arranging multiple FOV plots in a grid.
 <code>ImageBinPlotObjects</code><a class="anchor" aria-label="anchor" href="#imagebinplotobjects"></a>
 </h4>
 <p>Creates spatial binning plots for multiple Seurat objects, optionally across multiple FOVs, with an option for uniform scaling.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ImageBinPlotObjects.html">ImageBinPlotObjects</a></span><span class="op">(</span></span>
 <span>  <span class="va">obj_list</span>,</span>
 <span>  <span class="va">feature</span>,</span>
