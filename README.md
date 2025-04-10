@@ -13,34 +13,65 @@ A Simple R function for binning and visualizing spatial transcriptomics data fro
 - **Multi-Object Plotting**: Use `ImageBinPlotObjects` to visualize spatial data across multiple Seurat objects.
 - **Customization**: Adjust bin size, color scaling, transparency, and layer order.
 
+
 ## Installation
 
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/simoncmo/ImageBinPlot.git
-   ```
+You can install `ImageBinPlot` directly from GitHub using the `remotes` package:
 
-2. **Source the Script**:
-   In your R session, source the script:
-   ```R
-   source("ImageBinPlot.R")
-   ```
+```R
+# Install remotes if not already installed
+if (!requireNamespace("remotes", quietly = TRUE)) {
+  install.packages("remotes")
+}
+
+# Install ImageBinPlot
+remotes::install_github("simoncmo/ImageBinPlot")
+```
+
+Alternatively, clone the repository and install locally:
+
+```bash
+git clone https://github.com/simoncmo/ImageBinPlot.git
+cd ImageBinPlot
+```
+
+```R
+# Install from local directory
+install.packages(".", repos = NULL, type = "source")
+```
+
+## Usage Simple
+
+Load the package and use the main functions:
+
+```R
+library(ImageBinPlot)
+
+# Example: Plot a single FOV
+p <- ImageBinPlot(seurat_obj, feature = "GeneA", bin_size = 20)
+print(p)
+
+# Example: Plot multiple FOVs
+p_fovs <- ImageBinPlotFOVs(seurat_obj, feature = "GeneA", same_scale = TRUE)
+print(p_fovs)
+```
 
 ## Dependencies
 
-Install the required R packages:
-```R
-install.packages(c("tidyverse", "Seurat", "ggplot2", "glue", "scattermore", "viridis", "patchwork"))
-```
-- `tidyverse`: For data manipulation and visualization.
-- `Seurat`: For handling spatial transcriptomics data.
-- `ggplot2`: For plotting.
-- `glue`: For string interpolation.
-- `scattermore`: For efficient scatter plot overlays.
-- `viridis`: Provides color palettes.
-- `patchwork`: For combining multiple plots.
+`ImageBinPlot` depends on the following R packages, which are automatically installed when you use `remotes::install_github()` or `install.packages()`:
 
-## Usage
+- `tidyverse`
+- `Seurat`
+- `ggplot2`
+- `glue`
+- `scattermore`
+- `viridis`
+- `patchwork`
+
+See the [`DESCRIPTION` file](DESCRIPTION) for the full list and version requirements.
+
+
+## Usage More
 
 ### Basic Setup
 Load your Seurat object and source the script:
