@@ -173,12 +173,7 @@ ggsave("EPCAM_multi_object.pdf", p_objects, width = 10, height = 10)
 
 ## Function Details
 
-Below is the reformatted documentation for your three functions (`ImageBinPlot`, `ImageBinPlotFOVs`, and `ImageBinPlotObjects`) in the style of R documentation, similar to the example you provided.
-
----
-
 ### Spatial Binning Plots
-**Source:** R/visualization.R  
 Visualize spatial transcriptomics data by creating binning plots for features (genes or molecules) in a Seurat object.
 
 #### `ImageBinPlot`
