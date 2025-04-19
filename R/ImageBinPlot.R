@@ -2,13 +2,13 @@
 # Utility functions for spatial binning and visualization of Seurat objects
 
 # Required packages
-library(tidyverse)
-library(Seurat)
-library(ggplot2)
-library(glue)
-library(scattermore)
-library(viridis)
-library(patchwork)
+# library(tidyverse)
+# library(Seurat)
+# library(ggplot2)
+# library(glue)
+# library(scattermore)
+# library(viridis)
+# library(patchwork)
 
 # Helper function to reverse layer order in ggplot
 reverse_layer_order <- function(plot_obj) {
@@ -119,7 +119,17 @@ GetPlotValueQuantile <- function(p_list, value_column = 'count', quantile = 0.75
 	return(as.numeric(quantile(values, probs = quantile)))
 }
 
-# Helper function for getting viridis palette
+#' Helper function for getting viridis palette
+#'
+#' @param palette Character string specifying the viridis palette name.
+#' @param begin Numeric, starting hue (0-1).
+#' @param end Numeric, ending hue (0-1).
+#' @param n Integer, number of colors.
+#' @param alpha Numeric, alpha transparency (0-1).
+#' @param ... Other arguments passed to the palette function.
+#' @return A character vector of colors.
+#'
+#' @importFrom viridis viridis inferno magma plasma cividis mako rocket turbo
 viridisColor <- function(
   palette = c('viridis', 'inferno', 'magma', 'plasma','cividis','mako','rocket','turbo'),
   begin = 0.3,
