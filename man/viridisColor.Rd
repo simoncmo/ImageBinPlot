@@ -2,7 +2,7 @@
 % Please edit documentation in R/ImageBinPlot.R
 \name{viridisColor}
 \alias{viridisColor}
-\title{Helper function for getting viridis palette}
+\title{viridisColor}
 \usage{
 viridisColor(
   palette = c("viridis", "inferno", "magma", "plasma", "cividis", "mako", "rocket",
@@ -15,21 +15,22 @@ viridisColor(
 )
 }
 \arguments{
-\item{palette}{Character string specifying the viridis palette name.}
+\item{palette}{Character, one of 'viridis', 'inferno', 'magma', 'plasma', 'cividis', 'mako', 'rocket', 'turbo'.}
 
-\item{begin}{Numeric, starting hue (0-1).}
+\item{begin}{Numeric, starting hue (between 0 and 1). Default is 0.3.}
 
-\item{end}{Numeric, ending hue (0-1).}
+\item{end}{Numeric, ending hue (between 0 and 1). Default is 1.}
 
-\item{n}{Integer, number of colors.}
+\item{n}{Integer, number of colors to generate. Default is 10.}
 
-\item{alpha}{Numeric, alpha transparency (0-1).}
+\item{alpha}{Numeric, transparency level (between 0 and 1). Default is 1.}
 
-\item{...}{Other arguments passed to the palette function.}
+\item{...}{Additional arguments passed to the palette function.}
 }
 \value{
-A character vector of colors.
+A vector of colors from the specified viridis palette.
 }
 \description{
 Helper function for getting viridis palette
 }
+\keyword{internal}

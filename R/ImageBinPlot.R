@@ -119,16 +119,18 @@ GetPlotValueQuantile <- function(p_list, value_column = 'count', quantile = 0.75
 	return(as.numeric(quantile(values, probs = quantile)))
 }
 
+#' viridisColor
+#' 
 #' Helper function for getting viridis palette
 #'
-#' @param palette Character string specifying the viridis palette name.
-#' @param begin Numeric, starting hue (0-1).
-#' @param end Numeric, ending hue (0-1).
-#' @param n Integer, number of colors.
-#' @param alpha Numeric, alpha transparency (0-1).
-#' @param ... Other arguments passed to the palette function.
-#' @return A character vector of colors.
-#'
+#' @param palette Character, one of 'viridis', 'inferno', 'magma', 'plasma', 'cividis', 'mako', 'rocket', 'turbo'.
+#' @param begin Numeric, starting hue (between 0 and 1). Default is 0.3.
+#' @param end Numeric, ending hue (between 0 and 1). Default is 1.
+#' @param n Integer, number of colors to generate. Default is 10.
+#' @param alpha Numeric, transparency level (between 0 and 1). Default is 1.
+#' @param ... Additional arguments passed to the palette function.
+#' @return A vector of colors from the specified viridis palette.
+#' @keywords internal
 #' @importFrom viridis viridis inferno magma plasma cividis mako rocket turbo
 viridisColor <- function(
   palette = c('viridis', 'inferno', 'magma', 'plasma','cividis','mako','rocket','turbo'),
