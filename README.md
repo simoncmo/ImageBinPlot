@@ -71,7 +71,7 @@ print(p_fovs)
 See the [`DESCRIPTION` file](DESCRIPTION) for the full list and version requirements.
 
 
-## Usage More
+## More Usage Details
 
 ### Basic Setup
 Load your Seurat object and source the script:
@@ -549,8 +549,6 @@ Numeric; optional number of columns when arranging combined plots in a grid. Def
 A patchwork ggplot object combining bin plots across all specified objects and FOVs.
 
 --- 
-
-This format aligns with the R documentation style you provided, including sections for function description, arguments, and return value, while maintaining clarity and consistency. Let me know if you'd like further adjustments!
 
 ## Contributing
 Submit issues or pull requests to improve functionality or add features.
