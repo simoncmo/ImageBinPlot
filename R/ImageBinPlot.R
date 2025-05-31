@@ -2,13 +2,13 @@
 # Utility functions for spatial binning and visualization of Seurat objects
 
 # Required packages
-# library(tidyverse)
-# library(Seurat)
-# library(ggplot2)
-# library(glue)
-# library(scattermore)
-# library(viridis)
-# library(patchwork)
+library(tidyverse)
+library(Seurat)
+library(ggplot2)
+library(glue)
+library(scattermore)
+library(viridis)
+library(patchwork)
 
 # Helper function to reverse layer order in ggplot
 reverse_layer_order <- function(plot_obj) {
@@ -33,7 +33,7 @@ get_fov_centroid_ranges <- function(obj, fov = NULL) {
 }
 
 # Fetch data with centroid coordinates
-FetchDataWithCentroid <- function(obj, vars, assay = NULL, layer = "count", fov = NULL) {
+FetchDataWithCentroid <- function(obj, vars, assay = NULL, layer = "counts", fov = NULL) {
   assay <- assay %||% DefaultAssay(obj)
   fov <- fov %||% Images(obj)[[1]]
   if (!assay %in% names(obj@assays)) {
@@ -197,7 +197,7 @@ ImageBinPlot <- function(obj, feature, group.by = NULL,
                                         max_multiplier = NULL, 
                                         min = 0, 
                                         max_quantile = "q75",
-                                        type = "expression", assay = "Xenium", layer = "count",
+                                        type = "expression", assay = "Xenium", layer = "counts",
                                         # palette
                                         palette = c('viridis', 'inferno', 'magma', 'plasma','cividis','mako','rocket','turbo'),
                                         palette_begin = 0,
@@ -294,14 +294,14 @@ ImageBinPlot <- function(obj, feature, group.by = NULL,
   
   # Add identity overlay if specified
   if (!is.null(group.by)) {
-    df_ident <- FetchDataWithCentroid(obj, vars = feature, assay = assay, layer = layer, fov = fov) %>%
+    df_ident <- FetchDataWithCentroid(obj, vars = group.by, assay = assay, layer = layer, fov = fov) %>%
       mutate(x_center = x, y_center = y) %>%
       select(-x, -y)
     
     if (!is.null(filter_ident)) {
       df_ident <- df_ident %>% filter(.data[[group.by]] %in% filter_ident)
     }
-    
+
     p <- p + geom_scattermore(
       data = df_ident,
       inherit.aes = FALSE,
@@ -412,7 +412,7 @@ ImageBinPlotFOVs <- function(obj, feature, group.by = NULL,
                                x_min = NULL, x_max = NULL, 
                                y_min = NULL, y_max = NULL, 
                                x_col = "x", y_col = "y", 
-                               type = "expression", assay = "Xenium", layer = "count",
+                               type = "expression", assay = "Xenium", layer = "counts",
                                ident_alpha = 0.3, ident_pointsize = 1, 
                                # palette
                                palette = c('viridis', 'inferno', 'magma', 'plasma','cividis','mako','rocket','turbo'),
@@ -513,7 +513,7 @@ ImageBinPlotObjects <- function(
   x_min = NULL, x_max = NULL, 
   y_min = NULL, y_max = NULL, 
   x_col = "x", y_col = "y", 
-  type = "expression", assay = "Xenium", layer = "count",
+  type = "expression", assay = "Xenium", layer = "counts",
   ident_alpha = 0.3, ident_pointsize = 1, 
   # palette
   palette = c('viridis', 'inferno', 'magma', 'plasma','cividis','mako','rocket','turbo'),
